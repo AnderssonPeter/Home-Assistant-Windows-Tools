@@ -34,6 +34,7 @@ This allows you to turn IIS into a Reverse proxy with multiple users.
 * add at least one user
 * If your not using `Let's Encrypt` remove PathException `~/.well-known/acme-challenge/*`
 * If you wish to be able to access HASS without authenticating at home add a ip exception specific for your ip or with `192.168.0.*` (replace `0` if your using a diffrent subnet)
+* Open web.config change the ip address on the following line `<action type="Rewrite" url="http://192.168.0.15/{R:1}"/>`.
 
 ### Requirments
 * URL Rewrite for IIS
