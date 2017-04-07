@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeAssistantService", "HomeAssistantService\HomeAssistantService.csproj", "{99DE2250-C1FC-44F0-85A2-82EEB5C47FCC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{80CA0924-5A27-417F-8AAB-61D649C11149} = {80CA0924-5A27-417F-8AAB-61D649C11149}
+		{2F8A4E97-3E71-487C-A37F-7CAF7D9D7289} = {2F8A4E97-3E71-487C-A37F-7CAF7D9D7289}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gatttool", "gatttool\gatttool.csproj", "{80CA0924-5A27-417F-8AAB-61D649C11149}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "hcitool", "hcitool\hcitool.csproj", "{2F8A4E97-3E71-487C-A37F-7CAF7D9D7289}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IISRPWA", "IISRPWA\IISRPWA.csproj", "{271EEBE6-37CF-4B05-BCA8-EE00D414B542}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IISRPWA.Manager", "IISRPWA.Manager\IISRPWA.Manager.csproj", "{1D3AD3EE-CA5B-47CD-A87F-FD9710E059C5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{079EC9E8-A727-45EE-997E-F839DE14E2CB}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99DE2250-C1FC-44F0-85A2-82EEB5C47FCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99DE2250-C1FC-44F0-85A2-82EEB5C47FCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99DE2250-C1FC-44F0-85A2-82EEB5C47FCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99DE2250-C1FC-44F0-85A2-82EEB5C47FCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80CA0924-5A27-417F-8AAB-61D649C11149}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80CA0924-5A27-417F-8AAB-61D649C11149}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80CA0924-5A27-417F-8AAB-61D649C11149}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80CA0924-5A27-417F-8AAB-61D649C11149}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F8A4E97-3E71-487C-A37F-7CAF7D9D7289}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F8A4E97-3E71-487C-A37F-7CAF7D9D7289}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F8A4E97-3E71-487C-A37F-7CAF7D9D7289}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F8A4E97-3E71-487C-A37F-7CAF7D9D7289}.Release|Any CPU.Build.0 = Release|Any CPU
+		{271EEBE6-37CF-4B05-BCA8-EE00D414B542}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{271EEBE6-37CF-4B05-BCA8-EE00D414B542}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{271EEBE6-37CF-4B05-BCA8-EE00D414B542}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{271EEBE6-37CF-4B05-BCA8-EE00D414B542}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D3AD3EE-CA5B-47CD-A87F-FD9710E059C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D3AD3EE-CA5B-47CD-A87F-FD9710E059C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D3AD3EE-CA5B-47CD-A87F-FD9710E059C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D3AD3EE-CA5B-47CD-A87F-FD9710E059C5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
