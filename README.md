@@ -16,10 +16,16 @@ This tool emulates the linux bluez stack hcitool, it currently only supports `le
 This tool allows you to run HASS as a `Windows service` also implements a check every 30 seconds to ensure that HASS is responsive.
 
 ### Installation
-* Copy the `HomeAssistantService` folder to a location of choice for example `C:\Program files\HomeAssistantService`
-* Open cmd and go to the directory where you placed `HomeAssistantService` run `HomeAssistantService install`
-* Provide the credentials for the current user then prompted (This is used to run the service as the current user)
-* `HomeAssistantService start` this starts the service and in turn `HASS`.
+* Copy the `HomeAssistantService` folder to a location of choice for example `C:\Program files\HomeAssistantService\`
+* Open cmd and go to the directory where you placed `HomeAssistantService`
+* Run `HomeAssistantService install`, this installs it as a windows service.
+* Provide the credentials for the current user when prompted (This is used to run the service as the current user)
+* Run `HomeAssistantService start` this starts the service and in turn `Home Assistant`.
+
+### Uninstall
+* Open cmd and go to the directory where you placed `HomeAssistantService`
+* First stop the service with `HomeAssistantService stop`
+* Run `HomeAssistantService uninstall` to uninstall the service
 
 ## IISRPWA - IIS Reverse Proxy with authentication
 This allows you to turn IIS into a Reverse proxy with multiple users.
