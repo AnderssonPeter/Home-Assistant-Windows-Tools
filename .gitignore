@@ -254,3 +254,4 @@ paket-files/
 # Specific for this solution
 Configuration.config
 IISRPWA/App_Data/*
+Publish

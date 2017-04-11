@@ -41,6 +41,10 @@ namespace HomeAssistantService
                         if (httpNode.Children.TryGetValue(new YamlScalarNode("api_password"), out YamlNode apiPasswordNode))
                             apiPassword = ((YamlScalarNode)apiPasswordNode).Value;
                     }
+
+                    if (CheckIfAlive())
+                        ShutdownWithApiCall();
+
                     var pythonPath = GetPythonExecutable();
                     if (string.IsNullOrEmpty(pythonPath))
                         throw new InvalidOperationException("Could not find python");
@@ -129,7 +133,7 @@ namespace HomeAssistantService
                 }
 
                 //Send shutdown signal with api!
-                var result = MakeApiRequest("services/homeassistant/stop", HttpMethod.Post).GetAwaiter().GetResult();
+                ShutdownWithApiCall();
                 //give it 3 seconds to shut down on its own.
                 if (!process.WaitForExit(3000))
                 {
@@ -141,6 +145,11 @@ namespace HomeAssistantService
                 process.Dispose();
                 process = null;
             }
+        }
+
+        private void ShutdownWithApiCall()
+        {
+            var result = MakeApiRequest("services/homeassistant/stop", HttpMethod.Post).GetAwaiter().GetResult();
         }
 
         private bool CheckIfAlive()
