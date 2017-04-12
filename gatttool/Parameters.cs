@@ -16,6 +16,8 @@ namespace gatttool
         { get; set; }
         public bool Write
         { get; set; }
+        public bool Characteristics
+        { get; set; }
         public string WriteValue
         { get; set; }
     }

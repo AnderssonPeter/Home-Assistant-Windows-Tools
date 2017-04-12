@@ -44,9 +44,10 @@ namespace gatttool
         {
             var p = new FluentCommandLineParser<Parameters>();
             p.Setup(arg => arg.DeviceMac).As('b', "device").Required();
-            p.Setup(arg => arg.CharacteristicHandle).As('a', "handle").Required();
             p.Setup(arg => arg.Read).As("char-read").SetDefault(false);
             p.Setup(arg => arg.Write).As("char-write-req").SetDefault(false);
+            p.Setup(arg => arg.Characteristics).As("characteristics").SetDefault(false);
+            p.Setup(arg => arg.CharacteristicHandle).As('a', "handle");
             p.Setup(arg => arg.WriteValue).As('n', "value").SetDefault(string.Empty);
 
             var result = p.Parse(args);
@@ -64,15 +65,24 @@ namespace gatttool
                 return false;
             }
 
-            if (!handleRegex.IsMatch(parameters.CharacteristicHandle))
+            if (parameters.Read || parameters.Write)
             {
-                Console.WriteLine("Invalid characteristic handle provided");
-                return false;
+                if (string.IsNullOrEmpty(parameters.CharacteristicHandle))
+                {
+                    Console.WriteLine("handle must be provided when reading or writing");
+                    return false;
+                }
+                if (!handleRegex.IsMatch(parameters.CharacteristicHandle))
+                {
+                    Console.WriteLine("Invalid characteristic handle provided");
+                    return false;
+                }
+
             }
 
-            if (!parameters.Write && !parameters.Read)
+            if (!parameters.Write && !parameters.Read && !parameters.Characteristics)
             {
-                Console.WriteLine("Must either set read or write mode!");
+                Console.WriteLine("Must either set read, write or characteristics mode!");
                 return false;
             }
 
@@ -113,7 +123,7 @@ namespace gatttool
 
                 if (deviceIds.Count == 0)
                 {
-                    Console.WriteLine("Failed to find device with corret mac address");
+                    Console.WriteLine("Failed to find device with correct mac address");
                     return false;
                 }
                 if (deviceIds.Count > 1)
@@ -124,25 +134,38 @@ namespace gatttool
                 var device = await BluetoothLEDevice.FromIdAsync(deviceIds.First());
 
                 //Look up uuid
-                var characteristicHandle = int.Parse(parameters.CharacteristicHandle.Substring(2), NumberStyles.HexNumber);
-                var characteristic = device.GattServices.
-                                            SelectMany(s => s.GetAllCharacteristics()).
-                                            FirstOrDefault(c => c.AttributeHandle == characteristicHandle);
-
-                if (characteristic == null)
+                if (parameters.Characteristics)
                 {
-                    Console.WriteLine("Failed to find characteristic");
-                    return false;
-                }
-                if (parameters.Read)
-                {
-                    return await ReadCharacteristic(characteristic);
+                    var characteristics = device.GattServices.
+                                                 SelectMany(s => s.GetAllCharacteristics());
+                    foreach (var characteristic in characteristics)
+                    {
+                        Console.WriteLine($"handle = 0x{characteristic.AttributeHandle:x4}, char properties = 0x{((int)characteristic.CharacteristicProperties):x2}, char value handle = 0x{characteristic.AttributeHandle + 1:x4}, uuid = {characteristic.Uuid}");
+                    }
+                    return true;
                 }
                 else
                 {
-                    //Parse write value
-                    var data = StringToByteArray(parameters.WriteValue);
-                    return await WriteCharacteristic(characteristic, data);
+                    var characteristicHandle = int.Parse(parameters.CharacteristicHandle.Substring(2), NumberStyles.HexNumber);
+                    var characteristic = device.GattServices.
+                                                SelectMany(s => s.GetAllCharacteristics()).
+                                                FirstOrDefault(c => c.AttributeHandle == (characteristicHandle - 1));
+
+                    if (characteristic == null)
+                    {
+                        Console.WriteLine("Failed to find characteristic");
+                        return false;
+                    }
+                    if (parameters.Read)
+                    {
+                        return await ReadCharacteristic(characteristic);
+                    }
+                    else
+                    {
+                        //Parse write value
+                        var data = StringToByteArray(parameters.WriteValue);
+                        return await WriteCharacteristic(characteristic, data);
+                    }
                 }
             }
             catch (Exception ex)

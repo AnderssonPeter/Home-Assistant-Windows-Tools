@@ -2,7 +2,7 @@
 This project contains tools to make Home Assistant easier to use on windows.
 
 ## gatttool
-This tool emulates the linux bluez stack gatttool, it currently only supports `--char-read` and `--char-write-req` functionality but that is enough to run `Mi Flora Plant Sensor`.
+This tool emulates the linux bluez stack gatttool, it currently only supports `--char-read`, `--char-write-req` and `--characteristics` functionality but that is enough to run `Mi Flora Plant Sensor`.
 > Only tested on `Windows 10`, not compatible with `Windows 7` but could work on `Windows 8` and `Windows 8.1`.
 
 ## hcitool
