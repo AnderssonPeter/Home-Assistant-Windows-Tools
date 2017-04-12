@@ -31,8 +31,6 @@ namespace gatttool
 
         static int Main(string[] args)
         {
-            if (!ParseConfiguration())
-                return 1;
             if (!ParseCommandLine(args))
                 return 1;
             if (!AsyncContext.Run(() => MainAsync()))
