@@ -140,16 +140,19 @@ namespace gatttool
                                                  SelectMany(s => s.GetAllCharacteristics());
                     foreach (var characteristic in characteristics)
                     {
+                        //We are guessing that char value handle = handle + 1, this might be incorrect.
                         Console.WriteLine($"handle = 0x{characteristic.AttributeHandle:x4}, char properties = 0x{((int)characteristic.CharacteristicProperties):x2}, char value handle = 0x{characteristic.AttributeHandle + 1:x4}, uuid = {characteristic.Uuid}");
                     }
                     return true;
                 }
                 else
                 {
-                    var characteristicHandle = int.Parse(parameters.CharacteristicHandle.Substring(2), NumberStyles.HexNumber);
+                    var characteristicValueHandle = int.Parse(parameters.CharacteristicHandle.Substring(2), NumberStyles.HexNumber);
+                    //We are guessing that handle = char value handle - 1, this might be incorrect.
+                    var characteristicHandle = characteristicValueHandle - 1;
                     var characteristic = device.GattServices.
                                                 SelectMany(s => s.GetAllCharacteristics()).
-                                                FirstOrDefault(c => c.AttributeHandle == (characteristicHandle - 1));
+                                                FirstOrDefault(c => c.AttributeHandle == characteristicHandle);
 
                     if (characteristic == null)
                     {
