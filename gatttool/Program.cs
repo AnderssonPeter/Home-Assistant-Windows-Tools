@@ -28,7 +28,6 @@ namespace gatttool
         static Regex handleRegex = new Regex(@"^0x" + hex + "+$", RegexOptions.Compiled);
         static Regex hexRegex = new Regex(@"^(" + byteInHex + ")+$", RegexOptions.Compiled);
         static Parameters parameters;
-        static Dictionary<int, Guid> handleMappings;
 
         static int Main(string[] args)
         {
@@ -41,24 +40,6 @@ namespace gatttool
                 return 1;
             }
             return 0;
-        }
-
-        static bool ParseConfiguration()
-        {
-            try
-            {
-                handleMappings = ConfigurationManager.AppSettings["HandleMapping"].
-                                                      Split(';').
-                                                      Select(s => s.Split('=')).
-                                                      ToDictionary(a => int.Parse(a[0].Substring(2), NumberStyles.HexNumber),
-                                                                   a => Guid.Parse(a[1]));
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Failed to parse config file" + Environment.NewLine + ex.ToString());
-                return false;
-            }
         }
 
         static bool ParseCommandLine(string[] args)
@@ -114,12 +95,6 @@ namespace gatttool
                 Console.WriteLine("Write value is invalid must be hex!");
                 return false;
             }
-            var characteristicHandle = int.Parse(parameters.CharacteristicHandle.Substring(2), NumberStyles.HexNumber);
-            if (!handleMappings.ContainsKey(characteristicHandle))
-            {
-                Console.WriteLine($"No handle mapping for {parameters.CharacteristicHandle} has been defined in gatttool.config");
-                return false;
-            }
 
             return true;
         }
@@ -152,10 +127,10 @@ namespace gatttool
 
                 //Look up uuid
                 var characteristicHandle = int.Parse(parameters.CharacteristicHandle.Substring(2), NumberStyles.HexNumber);
-                var characteristicUuid = handleMappings[characteristicHandle];
                 var characteristic = device.GattServices.
-                                            SelectMany(s => s.GetCharacteristics(characteristicUuid)).
-                                            FirstOrDefault();
+                                            SelectMany(s => s.GetAllCharacteristics()).
+                                            FirstOrDefault(c => c.AttributeHandle == characteristicHandle);
+
                 if (characteristic == null)
                 {
                     Console.WriteLine("Failed to find characteristic");

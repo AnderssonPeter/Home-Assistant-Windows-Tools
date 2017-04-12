@@ -3,8 +3,6 @@ This project contains tools to make Home Assistant easier to use on windows.
 
 ## gatttool
 This tool emulates the linux bluez stack gatttool, it currently only supports `--char-read` and `--char-write-req` functionality but that is enough to run `Mi Flora Plant Sensor`.
-If you need to support some other device please boot linux and run `gatttool --device=[mac] --characteristics` then change the `gatttool.config` file to include the needed handles and what they map to when verified that it works as intended please create a pull request (or issue) with the changes to `gatttool.config`.
-> I have found no way so far to get the handles that `gatttool` uses so those are currently hardcoded in the `gatttool.config`.
 > Only tested on `Windows 10`, not compatible with `Windows 7` but could work on `Windows 8` and `Windows 8.1`.
 
 ## hcitool
