@@ -1,8 +1,10 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -42,6 +44,7 @@ namespace HomeAssistantService
                             apiPassword = ((YamlScalarNode)apiPasswordNode).Value;
                     }
 
+                    Console.WriteLine("Ensuring that HomeAssistant isen't already running");
                     if (CheckIfAlive())
                         ShutdownWithApiCall();
 
@@ -51,14 +54,16 @@ namespace HomeAssistantService
                     var startInfo = new ProcessStartInfo() { FileName = pythonPath,
                                                              Arguments = "-m homeassistant",
                                                              UseShellExecute = false,
-                                                             RedirectStandardInput = true,
+                                                             RedirectStandardInput = true/*,
                                                              RedirectStandardOutput = true,
-                                                             RedirectStandardError = true };
+                                                             RedirectStandardError = true*/ };
                     var applcationDirectory = Path.GetDirectoryName(AppDomain.CurrentDomain.BaseDirectory);
                     var toolsDirectory = Path.Combine(applcationDirectory, "Tools");
                     var gatttoolDirectory = Path.Combine(toolsDirectory, "gatttool");
                     var hcitoolDirectory = Path.Combine(toolsDirectory, "hcitool");
                     startInfo.EnvironmentVariables["path"] += ";" + gatttoolDirectory + ";" + hcitoolDirectory + ";";
+
+                    Console.WriteLine("Starting HomeAssistant");
                     process = Process.Start(startInfo);
 
                     if (process == null || process.HasExited)
@@ -66,9 +71,21 @@ namespace HomeAssistantService
                     //give it 5 seconds to boot
                     if (process.WaitForExit(5 * 1000))
                         throw new ArgumentException("Failed to start home assistant");
-                    if (!CheckIfAlive())
+                    var started = false;
+                    for (var i = 0; i < 5; i++)
+                    {
+                        if (CheckIfAlive())
+                        {
+                            started = true;
+                            break;
+                        }
+                        Thread.Sleep(5000);
+                    }
+                    if (!started)
                         throw new ArgumentException("Home assistant is not responding");
-                    timer = new Timer(CheckState, null, TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(30));
+
+                    Console.WriteLine("Starting timer to check health of home assistant");
+                    timer = new Timer(CheckState, null, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
                 }
                 catch(Exception ex)
                 {
@@ -137,6 +154,9 @@ namespace HomeAssistantService
                 //give it 3 seconds to shut down on its own.
                 if (!process.WaitForExit(3000))
                 {
+                    //shutdown all child processes
+                    KillAllProcessesSpawnedBy(process);
+
                     process.CloseMainWindow();
                     //Give it 2 more seconds to shutdown on its own.
                     if (!process.WaitForExit(2000))
@@ -144,6 +164,19 @@ namespace HomeAssistantService
                 }
                 process.Dispose();
                 process = null;
+            }
+        }
+
+        private static void KillAllProcessesSpawnedBy(Process process)
+        {
+            List<Process> children = new List<Process>();
+            ManagementObjectSearcher mos = new ManagementObjectSearcher(String.Format("Select * From Win32_Process Where ParentProcessID={0}", process.Id));
+
+            foreach (ManagementObject mo in mos.Get())
+            {
+                var childProcess = Process.GetProcessById(Convert.ToInt32(mo["ProcessID"]));
+                KillAllProcessesSpawnedBy(childProcess);
+                childProcess.Kill();
             }
         }
 

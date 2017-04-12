@@ -24,6 +24,7 @@ namespace HomeAssistantService
                 x.SetDescription("Home Assistant is an open-source home automation platform." + Environment.NewLine +
                                  "Track and control all devices at home and automate control.");
                 x.SetServiceName(ServiceName);
+                x.SetStartTimeout(TimeSpan.FromSeconds(30));
                 x.BeforeInstall(settings =>
                 {
                     if (!EventLog.SourceExists(settings.ServiceName))
